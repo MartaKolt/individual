@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STUDENTS 50
+#define MAX_CLASSES 10
+#define MAX_SPECIALTIES 5
+
+// Структура для зберігання відвідування занять студентами
+typedef struct {
+    char name[50];
+    char specialty[50];
+    int course;
+    int attendance[MAX_CLASSES]; // Масив для зберігання відвідувань по заняттях
+    float avgAttendance; // Середнє значення відвідування
+} Student;
+
+int main() {
+    Student students[MAX_STUDENTS];
+    int numStudents, numClasses, course;
+    char specialty[50];
+
+    printf("Введіть кількість студентів: ");
+    scanf("%d", &numStudents);
+
+    printf("Введіть кількість занять: ");
+    scanf("%d", &numClasses);
+
+    printf("Введіть курс (1, 2, 3 або 4): ");
+    scanf("%d", &course);
+
+    printf("Введіть назву спеціальності (Логістика, Комп'ютерні науки, Менеджмент, Маркетинг, Фінанси банківська справа): ");
+    scanf("%s", specialty);
+
+    // Заповнення даних про студентів
+    for (int i = 0; i < numStudents; i++) {
+        printf("Введіть ім'я студента %d: ", i + 1);
+        scanf("%s", students[i].name);
+        strcpy(students[i].specialty, specialty);
+        students[i].course = course;
+        printf("Введіть відвідування студента %s по %d заняттям (1 - присутній, 0 - відсутній):\n", students[i].name, numClasses);
+        for (int j = 0; j < numClasses; j++) {
+            scanf("%d", &students[i].attendance[j]);
+        }
+    }
+
+    // Розрахунок середнього відвідування для кожного студента
+    for (int i = 0; i < numStudents; i++) {
+        int totalAttendance = 0;
+        for (int j = 0; j < numClasses; j++) {
+            totalAttendance += students[i].attendance[j];
+        }
+        students[i].avgAttendance = (float)totalAttendance / numClasses;
+    }
+
+    // Вивід результатів
+    printf("\n\n");
+    printf("------------------------------------------------------------------------------------------------------------------------\n");
+    printf("| %-20s | %-15s | %-10s | %-15s | %-15s |\n", "Ім'я студента", "Спеціальність", "Курс", "Відвідування", "Середнє");
+    printf("------------------------------------------------------------------------------------------------------------------------\n");
+    for (int i = 0; i < numStudents; i++) {
+        printf("| %-20s | %-15s | %-10d | ", students[i].name, students[i].specialty, students[i].course);
+        for (int j = 0; j < numClasses; j++) {
+            printf("%d ", students[i].attendance[j]);
+        }
+        printf("| %-15.2f |\n", students[i].avgAttendance);
+    }
+    printf("------------------------------------------------------------------------------------------------------------------------\n");
+
+    return 0;
+}
