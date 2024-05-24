@@ -6,33 +6,58 @@
 #define MAX_CLASSES 10
 #define MAX_SPECIALTIES 5
 
-
 typedef struct {
     char name[50];
     char specialty[50];
     int course;
-    int attendance[MAX_CLASSES];  
-    float avgAttendance; 
+    int attendance[MAX_CLASSES];
+    float avgAttendance;
 } Student;
 
 int main() {
     Student students[MAX_STUDENTS];
     int numStudents, numClasses, course;
     char specialty[50];
+    char specialties[MAX_SPECIALTIES][50] = {
+        "Логістика", "Комп'ютерні науки", "Менеджмент", "Маркетинг", "Фінанси банківська справа"
+    };
 
-    printf("Введіть кількість студентів: ");
+    printf("Введіть кількість студентів (макс %d): ", MAX_STUDENTS);
     scanf("%d", &numStudents);
+    while (numStudents < 1 || numStudents > MAX_STUDENTS) {
+        printf("Некоректне значення. Спробуйте ще раз: ");
+        scanf("%d", &numStudents);
+    }
 
-    printf("Введіть кількість занять: ");
+    printf("Введіть кількість занять (макс %d): ", MAX_CLASSES);
     scanf("%d", &numClasses);
+    while (numClasses < 1 || numClasses > MAX_CLASSES) {
+        printf("Некоректне значення. Спробуйте ще раз: ");
+        scanf("%d", &numClasses);
+    }
 
     printf("Введіть курс (1, 2, 3 або 4): ");
     scanf("%d", &course);
+    while (course < 1 || course > 4) {
+        printf("Некоректне значення. Спробуйте ще раз: ");
+        scanf("%d", &course);
+    }
 
-    printf("Введіть назву спеціальності (Логістика, Комп'ютерні науки, Менеджмент, Маркетинг, Фінанси банківська справа): ");
-    scanf("%s", specialty);
+    int validSpecialty = 0;
+    while (!validSpecialty) {
+        printf("Введіть назву спеціальності (Логістика, Комп'ютерні науки, Менеджмент, Маркетинг, Фінанси банківська справа): ");
+        scanf("%s", specialty);
+        for (int i = 0; i < MAX_SPECIALTIES; i++) {
+            if (strcmp(specialty, specialties[i]) == 0) {
+                validSpecialty = 1;
+                break;
+            }
+        }
+        if (!validSpecialty) {
+            printf("Некоректна спеціальність. Спробуйте ще раз.\n");
+        }
+    }
 
-    
     for (int i = 0; i < numStudents; i++) {
         printf("Введіть ім'я студента %d: ", i + 1);
         scanf("%s", students[i].name);
@@ -40,11 +65,16 @@ int main() {
         students[i].course = course;
         printf("Введіть відвідування студента %s по %d заняттям (1 - присутній, 0 - відсутній):\n", students[i].name, numClasses);
         for (int j = 0; j < numClasses; j++) {
-            scanf("%d", &students[i].attendance[j]);
+            int attendance;
+            scanf("%d", &attendance);
+            while (attendance != 0 && attendance != 1) {
+                printf("Некоректне значення. Спробуйте ще раз: ");
+                scanf("%d", &attendance);
+            }
+            students[i].attendance[j] = attendance;
         }
     }
 
-    
     for (int i = 0; i < numStudents; i++) {
         int totalAttendance = 0;
         for (int j = 0; j < numClasses; j++) {
@@ -53,10 +83,9 @@ int main() {
         students[i].avgAttendance = (float)totalAttendance / numClasses;
     }
 
-    
     printf("\n\n");
     printf("------------------------------------------------------------------------------------------------------------------------\n");
-    printf("| %-20s | %-15s | %-10s | %-15s | %-15s |\n", "Ім'я студента", "Спеціальність", "Курс", "Відвідування", "Середнє");
+    printf("| %-20s | %-15s | %-10s | %-30s | %-15s |\n", "Ім'я студента", "Спеціальність", "Курс", "Відвідування", "Середнє");
     printf("------------------------------------------------------------------------------------------------------------------------\n");
     for (int i = 0; i < numStudents; i++) {
         printf("| %-20s | %-15s | %-10d | ", students[i].name, students[i].specialty, students[i].course);
